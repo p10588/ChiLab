@@ -25,13 +25,17 @@ public class ChiTest_ : MonoBehaviour
 
             OutputText(inputText);
         } catch(Exception e) {
-            OutputText(e.Message);
+            OutputText_Exception(e.Message);
             Debug.Log(e);
         }
     }
 
     private void OutputText(string outputText) {
         output.text += outputText + "\n";
+    }
+
+    private void OutputText_Exception(string outputText) {
+        output.text = "Exception: " + outputText;
     }
 }
 
