@@ -1,10 +1,10 @@
-using NUnit.Framework;
-
-namespace Chi.Utilities.Testing
+﻿using NUnit.Framework;
+using System;
+namespace TestSuite
 {
 
     [TestFixture]
-    public class ChiUnitTest_
+    public class Test_
     {
         Math_Test _math;
 
@@ -30,13 +30,8 @@ namespace Chi.Utilities.Testing
         [TestCase(1, 1, ExpectedResult = 2)]
         public int TestCase_ExpectedResult(int i, int j) {
             return this._math.Test_Sample_Add(i, j);
-            
-        }
 
-        public void Test_ObjectPool() {
-            ObjectPoolExtensions.CreatePool<Math_Test>(10);
         }
-
 
         [TearDown] // Do uninitalize after Test run
         public void TearDown() {

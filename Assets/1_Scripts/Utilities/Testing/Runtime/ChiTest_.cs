@@ -11,32 +11,41 @@ public class ChiTest_ : MonoBehaviour
     [SerializeField] private InputField output;
 
     private void Awake() {
-        testBtn.onClick.AddListener(()=> { OnBtnClick(input.text); });
+        testBtn.onClick.AddListener(OnBtnClick);
     }
 
     private void OnDestroy() {
         testBtn.onClick.RemoveAllListeners();
     }
 
-    private void OnBtnClick(string inputText) {
+    private void OnBtnClick() {
+        TestProcess(this.input.text);
+    }
+
+    private void TestProcess(string inputText) {
         try {
 
             //Do Some Test 
 
             OutputText(inputText);
-        } catch(Exception e) {
+        } catch (Exception e) {
             OutputText_Exception(e.Message);
             Debug.Log(e);
         }
     }
 
     private void OutputText(string outputText) {
-        output.text += outputText + "\n";
+        SetOutputText(outputText);
     }
 
     private void OutputText_Exception(string outputText) {
-        output.text = "Exception: " + outputText;
+        SetOutputText("Exception: " + outputText);
     }
+
+    private void SetOutputText(string output) {
+        this.output.text = output;
+    }
+
 }
 
 
