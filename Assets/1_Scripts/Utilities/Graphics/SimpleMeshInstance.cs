@@ -1,87 +1,106 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 namespace Chi.Utilities.Graphics
 {
+    [System.Serializable]
+    public struct InstanceData {
+        public Mesh mesh;
+        public Material material;
+        public Transform[] meshTransform;
+
+        public bool IsValid() {
+            try {
+                CheckVaild();
+                return true;
+            } catch(Exception e){
+                Debug.LogError(e);
+                return false;
+            }
+        }
+
+        private void CheckVaild() {
+            if(mesh == null) throw new ArgumentNullException("Mesh");
+            if(material == null) throw new ArgumentNullException("Material");
+            if(meshTransform == null) throw new ArgumentNullException("MeshTransform");
+
+            if(meshTransform.Length <= 0)
+                throw new ArgumentNullException($"MeshTransform is Empty");
+
+            if(meshTransform.Any(x => x == null))
+                throw new ArgumentNullException($"Some Element In MeshTransform are Null");
+        }
+
+    }
+
+    public interface IMeshInstance
+    {
+        InstanceData InstanceData { get; set; }
+        Matrix4x4[][] Matrices { get; }
+        void PrepareTRSMatrices(Transform[] transforms, int batchAmount, in int batchSize);
+        void DrawMeshInstance(InstanceData instanceDatas, int batchAmount);
+    }
 
     [ExecuteInEditMode]
-    public class SimpleMeshInstance : MonoBehaviour
+    public class SimpleMeshInstance : MonoBehaviour, IMeshInstance
     {
-        [SerializeField] private Mesh mesh;
-        [SerializeField] private Material mat;
-        [SerializeField] private List<Transform> meshTransform = new List<Transform>();
-        [SerializeField] private bool getTransformInChild;
+        [SerializeField]
+        private InstanceData instanceData;
 
-        private Matrix4x4[][] _matrices;
-        private int _batchAmount;
+        private MeshInstanceController _controller;
         private bool _isInitalized = false;
 
-        private const int BATCH_SIZE = 1023;
 
-        private void Start() {
+        private void Update() {
 
-            Initalize();
-        }
+            if (!this._isInitalized) {
+                this._controller = new MeshInstanceController(this);
 
-        // Update is called once per frame
-        void Update()
-        {
-            UpdateBatch(this._batchAmount, this._matrices);
-        }
-
-        private void Initalize() {
-
-            CheckMatGPUInstancing(this.mat);
-
-            this._batchAmount = CalculateBatch();
-
-            this._matrices = CalculateTRSMatrice(this._batchAmount);
-
-            this._isInitalized = true;
-        }
-
-        private bool CheckInitalized(bool isInitalized) {
-            if (!isInitalized) {
-                Debug.LogError($"{GetObjectNameAndType(this)} initalize fail");
+                if (this._controller.Initalize())
+                    this._isInitalized = true;
+                else {
+                    Debug.LogError($"{GetObjectNameAndType(this)} Controller Initalize Fail");
+                    return;
+                }
             }
-            return isInitalized;
+
+            this._controller.DrawMeshInstance();
         }
 
-        private void UpdateBatch(int batchAmount, Matrix4x4[][] matrices) {
+        private void OnDisable() {
+            this._isInitalized = false;
+            this._controller = null;
+        }
+
+        private string GetObjectNameAndType(UnityEngine.Object @object) {
+            string gameObjectName = (@object).name;
+            string typeName = @object.GetType().Name;
+
+            return $"{gameObjectName} {typeName}";
+        }
+
+
+        #region IMeshInstance Impementation
+        InstanceData IMeshInstance.InstanceData {
+            get { return instanceData; }
+            set { instanceData = value; }
+        }
+        Matrix4x4[][] IMeshInstance.Matrices => _matrices;
+
+        private Matrix4x4[][] _matrices;
+
+        void IMeshInstance.PrepareTRSMatrices(Transform[] transforms, int batchAmount, in int batchSize) {
+            Matrix4x4[][] _matrices = new Matrix4x4[batchAmount][];
             for (int i = 0; i < batchAmount; i++) {
-                UnityEngine.Graphics.DrawMeshInstanced(this.mesh, 0, this.mat, matrices[i], matrices[i].Length);
-            }
-        }
 
-        private void CheckMatGPUInstancing(Material material) {
-            if (!material) {
-                Debug.LogError($"{GetObjectNameAndType(this)} material is missing");
-                return;
-            }
-            if (!material.enableInstancing) {
-                Debug.LogWarning($"{GetObjectNameAndType(this)} force material enable instancing");
-                material.enableInstancing = true;
-            }
-        }
-
-        private List<Transform> GetTransformInChild(Transform root) {
-            return null;
-        }
-
-        private int CalculateBatch() {
-            return meshTransform.Count / BATCH_SIZE + 1;
-        }
-
-        private Matrix4x4[][] CalculateTRSMatrice(int batch) {
-            _matrices = new Matrix4x4[batch][];
-            for (int i = 0; i < batch; i++) {
-
-                int count = i == batch - 1 ? meshTransform.Count % BATCH_SIZE : BATCH_SIZE;
+                int count = i == batchAmount - 1 ? transforms.Length % batchSize : batchSize;
                 _matrices[i] = new Matrix4x4[count];
 
                 for (int j = 0; j < count; j++) {
-                    int index = i * BATCH_SIZE + j;
-                    Transform meshTransform = this.meshTransform[index];
+                    int index = i * batchSize + j;
+                    Transform meshTransform = transforms[index];
                     meshTransform.gameObject.SetActive(false);
                     Matrix4x4 mat = Matrix4x4.TRS(meshTransform.position,
                                                   meshTransform.rotation,
@@ -90,15 +109,70 @@ namespace Chi.Utilities.Graphics
                 }
 
             }
-            return _matrices;
+            this._matrices = _matrices;
         }
 
-        private string GetObjectNameAndType(Object @object) {
-            string gameObjectName = ((GameObject)@object).name;
-            string typeName = @object.GetType().Name;
+        void IMeshInstance.DrawMeshInstance(InstanceData instanceDatas, int batchAmount) {
+            for (int i = 0; i < batchAmount; i++) {
+                UnityEngine.Graphics.DrawMeshInstanced(instanceDatas.mesh, 0,
+                                                       instanceDatas.material,
+                                                       _matrices[i], _matrices[i].Length);
+            }
+        }
 
-            return $"{gameObjectName} {typeName}";
-        } 
+        #endregion
+    }
+
+    public class MeshInstanceController
+    {
+        private readonly IMeshInstance _meshInstance;
+        private InstanceData _instanceDatas => _meshInstance.InstanceData;
+        private int _batchAmount;
+        private const int BATCH_SIZE = 1023;
+
+        public MeshInstanceController(IMeshInstance meshInstance) {
+            this._meshInstance = meshInstance;
+        }
+
+        public bool Initalize() {
+            bool isInitalize = false;
+            if (CheckDataIsValid()) {
+                PrepareBatchAmount();
+                PrepareTRSMatrices();
+                isInitalize = true;
+            }
+            return isInitalize;
+        }
+
+        public void DrawMeshInstance() {
+            this._meshInstance.DrawMeshInstance(this._instanceDatas, this._batchAmount); 
+        }
+
+        private bool CheckDataIsValid() {
+            bool checker = false;
+            try {
+                checker = this._instanceDatas.IsValid();
+            } catch(Exception e) {
+                Debug.LogError(e);
+                throw;
+            }
+            return checker;
+        }
+
+        private void PrepareBatchAmount() { 
+            this._batchAmount = CalculateBatch(this._instanceDatas.meshTransform.Length,
+                                              BATCH_SIZE);
+        }
+
+        private void PrepareTRSMatrices() {
+            this._meshInstance.PrepareTRSMatrices(this._instanceDatas.meshTransform,
+                                                  _batchAmount, BATCH_SIZE);
+        }
+
+        private int CalculateBatch(int transformCount, in int batchSize) {
+            return transformCount / batchSize + 1;
+        }
+
     }
 
 }
