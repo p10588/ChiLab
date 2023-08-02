@@ -1,44 +1,10 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+
 namespace Chi.Utilities.Graphics
 {
-    [System.Serializable]
-    public struct InstanceData {
-        public Mesh mesh;
-        public Material material;
-        public Transform[] meshTransform;
-
-        public bool IsValid() {
-            bool checker = false;
-            try {
-                CheckAllDataVaild();
-                checker = true;
-            } catch(Exception e){
-                throw e;
-            }
-            return checker;
-        }
-
-        private void CheckAllDataVaild() {
-            if(mesh == null) throw new ArgumentNullException("Mesh");
-
-            if(material == null) throw new ArgumentNullException("Material");
-            if(material.enableInstancing == false)
-                                 throw new InvalidOperationException("Not Instacning Material");
-
-            if (meshTransform == null) throw new ArgumentNullException("MeshTransform");
-
-            if(meshTransform.Length <= 0)
-                throw new ArgumentNullException($"MeshTransform is Empty");
-
-            if(meshTransform.Any(x => x == null))
-                throw new ArgumentNullException($"Some Element In MeshTransform are Null");
-        }
-
-    }
+    
 
     public interface IMeshInstance
     {
@@ -142,57 +108,6 @@ namespace Chi.Utilities.Graphics
         #endregion
     }
 
-    public class MeshInstanceController
-    {
-        private readonly IMeshInstance _meshInstance;
-        private InstanceData _instanceData;
-        private int _batchAmount;
-        private const int BATCH_SIZE = 1023;
-
-        public MeshInstanceController(IMeshInstance meshInstance, InstanceData instanceData) {
-            this._meshInstance = meshInstance;
-            this._instanceData = instanceData;
-        }
-
-        public bool Initalize() {
-            bool isInitalize = false;
-            if (CheckDataIsValid()) {
-                PrepareBatchAmount();
-                PrepareTRSMatrices();
-                isInitalize = true;
-            }
-            return isInitalize;
-        }
-
-        public void DrawMeshInstance() {
-            this._meshInstance.DrawMeshInstance(this._instanceData,this._batchAmount); 
-        }
-
-        private bool CheckDataIsValid() {
-            bool checker = false;
-            try {
-                checker = this._instanceData.IsValid();
-            } catch(Exception e) {
-                checker = false;
-                throw e;
-            } 
-            return checker;
-        }
-
-        private void PrepareBatchAmount() { 
-            this._batchAmount = CalculateBatch(this._instanceData.meshTransform.Length,
-                                              BATCH_SIZE);
-        }
-
-        private void PrepareTRSMatrices() {
-            this._meshInstance.PrepareMatrices(this._instanceData.meshTransform,
-                                                  _batchAmount, BATCH_SIZE);
-        }
-
-        private int CalculateBatch(int transformCount, in int batchSize) {
-            return transformCount / batchSize + 1;
-        }
-
-    }
+ 
 
 }
