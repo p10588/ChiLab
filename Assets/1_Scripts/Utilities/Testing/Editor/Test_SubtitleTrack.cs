@@ -23,11 +23,36 @@ namespace TestSuite
 
         [SetUp] // Do initalize before Test Run 
         public void SetUp() {
-            testAsset = LoadTestAsset<TextAsset>(TEST_ASSETS_PATH);
+            this.testAsset = LoadTestAsset<TextAsset>(TEST_ASSETS_PATH);
             //ISubtitleAssetTrack Mock;
-            //this.subtitleTrack_Mock = Substitute.For<ISubtitleAssetTrack>();
+            //this.subtitleTrack_Mock = SubtitleTrackMock();
+            
             this.subtitleTrack_Mock = ScriptableObject.CreateInstance<SubtitleAssetTrack>();
             this._controller = new SubtitleTrackController(this.subtitleTrack_Mock);
+
+        }
+
+        private ISubtitleAssetTrack SubtitleTrackMock() {
+            ISubtitleAssetTrack mock = Substitute.For<ISubtitleAssetTrack>();
+            mock.InitalSpeed.Returns(2);
+            mock.TimeOffset.Returns(1);
+            mock.Duration.Returns(1);
+            return mock;
+        }
+
+        [Test]
+        public void Test_AutoSetupSubtitle() {
+            try {
+                string[] subtitle  = new string[2] {
+                    "0.1,David,YAAAAAAAAAA",
+                    "1.5,David,ALLLLLLLLLL"
+                };
+                this._controller.AutoSetupSubtitle(this.testAsset, ref subtitle) ;
+                //subtitle.ToList().ForEach(x => Debug.Log(x));
+            } catch (Exception e) {
+                Debug.LogError(e);
+                Assert.Fail(e.Message);
+            }
         }
 
         [Test]
@@ -45,7 +70,7 @@ namespace TestSuite
         public void Test_CreateSubtitleClips() {
             try {
                 string[] subtitle = new string[2] {
-                    ",,",
+                    "0.1,David,YAAAAAAAAAA",
                     "1.5,David,ALLLLLLLLLL"
                 };
                 this._controller.CreateSubtitleClips(subtitle);
@@ -84,6 +109,8 @@ namespace TestSuite
         [TearDown] // Do uninitalize after Test run
         public void TearDown() {
             this.subtitleTrack_Mock = null;
+            this._controller = null;
+            this.testAsset = null;
         }
 
         private T LoadTestAsset<T>(string path) where T : UnityEngine.Object {

@@ -35,28 +35,20 @@ namespace Chi.Utilities.Timeline
         }
 
         private void OnEnable() {
-            _controller = new SubtitleTrackController(this);
-            //AutoSetupSubtitle();
+            this._controller = new SubtitleTrackController(this);
+        }
+        private void OnDisable() {
+            this._controller = null;
         }
 
         private void OnValidate() {
-            //if(this.subtitleText) AutoSetupSubtitle();
+            if(this.subtitleText) AutoSetupSubtitle();
         }
 
         private void AutoSetupSubtitle() {
-            if (this.m_Clips.Count <= 0 && CheckSubtitleTrackData()) {
-                ReadScript();
-                CreateSubtitleClips();
-            }
+            this._controller.AutoSetupSubtitle(subtitleText, ref subtitles);
         }
 
-        private bool CheckSubtitleTrackData() {
-            if (this.subtitles.Length <= 0) {
-                if (this.subtitleText) return true;
-                else return false;
-            }
-            return true;
-        }
 
         public void ReadScript() {
             this.subtitles = this._controller.ReadScript(this.subtitleText);

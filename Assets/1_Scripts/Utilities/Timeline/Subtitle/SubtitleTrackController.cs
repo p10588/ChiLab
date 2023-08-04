@@ -15,6 +15,23 @@ namespace Chi.Utilities.Timeline
             this._subtitleAssetTrack = subtitleTrack;
         }
 
+        public void AutoSetupSubtitle(TextAsset subtitleText, ref string[] subtitles) {
+            if (_subtitleAssetTrack.allClips.Count <= 0 &&
+                CheckSubtitleTrackHasData(subtitleText, subtitles)) {
+                subtitles = ReadScript(subtitleText);
+                CreateSubtitleClips(subtitles);
+            }
+        }
+
+        private bool CheckSubtitleTrackHasData(TextAsset subtitleText, string[] subtitles) {
+            if (subtitles?.Any() == false) {
+                if (subtitleText) return true;
+                else return false;
+            }
+
+            return true;
+        }
+
 
         public string[] ReadScript(TextAsset textAsset) {
             //Read file and turn to sting list
@@ -55,7 +72,7 @@ namespace Chi.Utilities.Timeline
 
         private bool TryCheckSubtitleIsValid(string[] subtitle) {
             try {
-                if (subtitle?.Any() != true)
+                if (subtitle?.Any() == false)
                     throw new NullReferenceException("subtitles list is null or Empty");
 
                 if (subtitle.Any(x => x == null))
@@ -71,6 +88,7 @@ namespace Chi.Utilities.Timeline
 
         private void CreateSingleClip(int index, string subtitle) {
             TimelineClip clip = this._subtitleAssetTrack.CreateClip();
+
             HandleSubtitleString(clip, index, subtitle);
         }
 
