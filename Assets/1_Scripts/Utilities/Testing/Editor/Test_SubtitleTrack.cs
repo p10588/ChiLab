@@ -18,26 +18,15 @@ namespace TestSuite
         SubtitleTrackController _controller;
 
         private const string TEST_ASSETS_PATH
-            = "Assets/1_Scripts/Utilities/Testing/TestAssets/SubtitleTrack/TestText.txt";
+            = "Assets/1_Scripts/Utilities/Timeline/Subtitle/TextData/TestText.txt";
 
 
         [SetUp] // Do initalize before Test Run 
         public void SetUp() {
             this.testAsset = LoadTestAsset<TextAsset>(TEST_ASSETS_PATH);
-            //ISubtitleAssetTrack Mock;
-            //this.subtitleTrack_Mock = SubtitleTrackMock();
-            
             this.subtitleTrack_Mock = ScriptableObject.CreateInstance<SubtitleAssetTrack>();
             this._controller = new SubtitleTrackController(this.subtitleTrack_Mock);
 
-        }
-
-        private ISubtitleAssetTrack SubtitleTrackMock() {
-            ISubtitleAssetTrack mock = Substitute.For<ISubtitleAssetTrack>();
-            mock.InitalSpeed.Returns(2);
-            mock.TimeOffset.Returns(1);
-            mock.Duration.Returns(1);
-            return mock;
         }
 
         [Test]
@@ -48,7 +37,6 @@ namespace TestSuite
                     "1.5,David,ALLLLLLLLLL"
                 };
                 this._controller.AutoSetupSubtitle(this.testAsset, ref subtitle) ;
-                //subtitle.ToList().ForEach(x => Debug.Log(x));
             } catch (Exception e) {
                 Debug.LogError(e);
                 Assert.Fail(e.Message);
@@ -90,7 +78,7 @@ namespace TestSuite
         }
 
         [Test]
-        public void Test_() {
+        public void Test_ListIsNullOrEmpty() {
             List<string> subtitle = new List<string>(1) { null};
 
             bool checker = true;
