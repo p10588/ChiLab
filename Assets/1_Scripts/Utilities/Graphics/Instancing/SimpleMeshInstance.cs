@@ -4,8 +4,6 @@ using UnityEngine;
 
 namespace Chi.Utilities.Graphics
 {
-    
-
     public interface IMeshInstance
     {
         Matrix4x4[][] Matrices { get; }

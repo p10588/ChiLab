@@ -1,4 +1,5 @@
 using Chi.Utilities.Graphics;
+using NSubstitute;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace TestSuite
             // Load Test Asset
             testAsset = LoadTestAsset<GameObject>(TEST_ASSETS_PATH);
 
-            meshInstance = new SimpleMeshInstance();
+            meshInstance = Substitute.For<IMeshInstance>();
 
             //Mock InstanceData
             InstanceData InstanceData_Mock = new InstanceData {
@@ -44,7 +45,7 @@ namespace TestSuite
         public void Test_Initalize() {
             var result = false;
             Assert.DoesNotThrow(() => { result = this.controller.Initalize(); });
-            Assert.AreEqual(result, true);
+            Assert.AreEqual(true, result);
         }
 
         [Test]
@@ -177,7 +178,7 @@ namespace TestSuite
 
 
         [Test]
-        public void Test_DrawMeshInstance() {
+        public void Test_Full() {
             GameObject testAssetObj = LoadTestAsset<GameObject>(TEST_ASSETS_PATH);
 
             InstanceData InstanceData_Mock = new InstanceData {
@@ -201,24 +202,9 @@ namespace TestSuite
             }
         }
 
-        /*
-                [TestCase(-1, 4)]
-                public void TestCase_Assert(int i, int j) {
-                    var result = this._math.Test_Sample_Add(i, j);
-                    Assert.AreEqual(result, 3);
-                }
-
-                [TestCase(-1, 4, ExpectedResult = 3)]
-                [TestCase(-2, 8, ExpectedResult = 6)]
-                [TestCase(1, 1, ExpectedResult = 2)]
-                public int TestCase_ExpectedResult(int i, int j) {
-
-                    return this._math.Test_Sample_Add(i, j);
-
-                }
-        */
         [TearDown] // Do uninitalize after Test run
         public void TearDown() {
+            this.meshInstance = null;
             this.controller = null;
         }
 
