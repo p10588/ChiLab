@@ -12,28 +12,33 @@ namespace Chi.Utilities.Graphics {
         public Transform[] meshTransform;
 
         public bool IsValid() {
-            bool checker = false;
             try {
                 CheckAllDataVaild();
-                checker = true;
+                return true;
             } catch (Exception e) {
                 throw e;
             }
-            return checker;
         }
 
         private void CheckAllDataVaild() {
-            if (mesh == null) throw new ArgumentNullException("Mesh");
+            HandleMeshException();
+            HandleMaterialException();
+            HandleMeshTransException();
+        }
 
+        private void HandleMeshException() {
+            if (mesh == null) throw new ArgumentNullException("Mesh");
+        }
+
+        private void HandleMaterialException() {
             if (material == null) throw new ArgumentNullException("Material");
             if (material.enableInstancing == false)
                 throw new InvalidOperationException("Not Instacning Material");
+        }
 
-            if (meshTransform == null) throw new ArgumentNullException("MeshTransform");
-
-            if (meshTransform.Length <= 0)
-                throw new ArgumentNullException($"MeshTransform is Empty");
-
+        private void HandleMeshTransException() {
+            if (meshTransform?.Any() == false)
+                throw new ArgumentNullException($"MeshTransform is Null or Empty");
             if (meshTransform.Any(x => x == null))
                 throw new ArgumentNullException($"Some Element In MeshTransform are Null");
         }

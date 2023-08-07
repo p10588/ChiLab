@@ -45,7 +45,7 @@ namespace Chi.Utilities.Timeline
 
         private bool CheckTextAsset(TextAsset textAsset) {
             try {
-                if (!textAsset) throw new NullReferenceException("TextAsset");
+                if (!textAsset) throw new ArgumentNullException("TextAsset");
                 return true;
             } catch (Exception e) {
                 Debug.LogError(e);
@@ -65,28 +65,33 @@ namespace Chi.Utilities.Timeline
         public void CreateSubtitleClips(string[] subtitles) {
             if (!TryCheckSubtitleIsValid(subtitles)) return;
 
-            for(int i=0;i< subtitles.Length; i++) {
+            ClearAllClips();
+
+            for (int i=0;i< subtitles.Length; i++) {
                 CreateSingleClip(i, subtitles[i]);
             }
         }
 
         private bool TryCheckSubtitleIsValid(string[] subtitle) {
             try {
-                if (subtitle?.Any() == false)
-                    throw new NullReferenceException("subtitles list is null or Empty");
-
-                if (subtitle.Any(x => x == null))
-                    throw new NullReferenceException("subtitles have null elements");
-
+                CheckStringAryIsValid(ref subtitle);
                 return true;
-
             } catch (Exception e) {
                 Debug.LogError(e);
                 return false;
             }
         }
 
+        private void CheckStringAryIsValid(ref string[] strAry) {
+            if (strAry?.Any() == false)
+                throw new ArgumentNullException("subtitles list is null or Empty");
+
+            if (strAry.Any(x => x == null))
+                throw new ArgumentNullException("subtitles have null elements");
+        }
+
         private void CreateSingleClip(int index, string subtitle) {
+
             TimelineClip clip = this._subtitleAssetTrack.CreateClip();
 
             HandleSubtitleString(clip, index, subtitle);

@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace Chi.Utilities.Graphics
 {
@@ -34,7 +35,7 @@ namespace Chi.Utilities.Graphics
                 checker = this._instanceData.IsValid();
             } catch (Exception e) {
                 checker = false;
-                throw e;
+                Debug.LogError(e);
             }
             return checker;
         }
