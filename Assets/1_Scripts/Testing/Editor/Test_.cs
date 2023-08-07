@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System;
-namespace TestSuite
+
+namespace Chi.Testing
 {
 
     [TestFixture]
