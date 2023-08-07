@@ -35,7 +35,7 @@ namespace Chi.Utilities.Graphics
                 checker = this._instanceData.IsValid();
             } catch (Exception e) {
                 checker = false;
-                Debug.LogError(e);
+                throw;
             }
             return checker;
         }
