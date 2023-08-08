@@ -16,7 +16,7 @@ namespace Chi.Testing
         private MeshInstanceController controller;
         private IMeshInstance meshInstance; //Mock MeshInstance
 
-        private const string TEST_ASSETS_PATH = "Assets/1_Scripts/Utilities/Testing/TestAssets/MeshInstance/Cube.prefab";
+        private const string TEST_ASSETS_PATH = "Assets/1_Scripts/Testing/TestAssets/MeshInstance/Cube.prefab";
 
         [SetUp] // Do initalize before Test Run 
         public void SetUp() {

@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System;
+using UnityEngine;
 
 namespace Chi.Testing
 {
@@ -7,46 +8,52 @@ namespace Chi.Testing
     [TestFixture]
     public class Test_
     {
-        Math_Test _math;
-
         [SetUp] // Do initalize before Test Run 
         public void SetUp() {
-            this._math = new Math_Test();
+
         }
 
         [Test]
-        public void FirstTest() {
-            var result = this._math.Test_Sample_Add(-10, -1);
-            Assert.AreEqual(result, -11);
+        public void Test() {
+            var result = false;
+            Assert.AreEqual(false, result);
         }
 
         [TestCase(-1, 4)]
         public void TestCase_Assert(int i, int j) {
-            var result = this._math.Test_Sample_Add(i, j);
-            Assert.AreEqual(result, 3);
+            var result = false;
+            Assert.AreEqual(false, result);
         }
 
-        [TestCase(-1, 4, ExpectedResult = 3)]
-        [TestCase(-2, 8, ExpectedResult = 6)]
-        [TestCase(1, 1, ExpectedResult = 2)]
-        public int TestCase_ExpectedResult(int i, int j) {
-            
-            return this._math.Test_Sample_Add(i, j);
 
+        [Test]
+        public void Test_VoidMethod() {
+            try {
+
+
+            } catch (Exception e) {
+                Debug.LogError(e);
+                Assert.Fail(e.Message);
+            }
+        }
+
+        [Test]
+        public void Test_Exception() {
+
+            //Assert.Throws<ArgumentNullException>(
+            //    () => { /* Do Some Test */ }
+            //);
         }
 
         [TearDown] // Do uninitalize after Test run
         public void TearDown() {
-            this._math = null;
         }
 
-    }
-
-
-    public class Math_Test
-    {
-        public int Test_Sample_Add(int i, int j) {
-            return i + j;
+        private T LoadTestAsset<T>(string path) where T : UnityEngine.Object {
+            T obj = UnityEditor.AssetDatabase.LoadAssetAtPath<T>(path);
+            if (!obj) Debug.LogError("Load Asset Fail");
+            return obj;
         }
+
     }
 }
