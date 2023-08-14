@@ -41,7 +41,6 @@ namespace Chi.Testing
         public void Test_ArrayIsNullorEmpty() {
             GameObject[] testAry = new GameObject[0];
             bool result = testAry.IsNullorEmpty();
-            Debug.Log(result);
             Assert.AreEqual(true, result);
         }
 
@@ -49,14 +48,48 @@ namespace Chi.Testing
         public void Test_ArrayHaveNullElements() {
             GameObject[] testAry = new GameObject[2] { new GameObject(), null };
             bool result = testAry.HaveNullElements();
-            Debug.Log(result);
             Assert.AreEqual(true, result);
 
             testAry = new GameObject[1] { new GameObject()};
             result = testAry.HaveNullElements();
-            Debug.Log(result);
             Assert.AreEqual(false, result);
         }
+
+        [Test]
+        public void Test_DicIsNullorEmpty() {
+            Dictionary<string, string> testDic = null;
+            bool result1 = testDic.IsNullorEmpty();
+            Assert.AreEqual(true, result1);
+
+            testDic = new Dictionary<string, string>();
+            bool result2 = testDic.IsNullorEmpty();
+            Assert.AreEqual(true, result2);
+        }
+
+        [Test]
+        public void Test_DicHaveNullValue() {
+            Dictionary<string, string> testDic = new Dictionary<string, string>();
+            testDic.Add("aaa", "bbb");
+            bool result = testDic.HaveNullValues();
+            Debug.Log(result);
+            Assert.AreEqual(false, result);
+
+            testDic.Add("ccc", null);
+            result = testDic.HaveNullValues();
+            Debug.Log(result);
+            Assert.AreEqual(true, result);
+        }
+
+        [Test]
+        public void Test_SplitNewLine() {
+            string testStr = "alskdfjlkasjd\nlksjdalks\n\rsdjkksdfh\r";          
+            string[] splitedStr = testStr.SplitNewLine();
+
+            Assert.AreEqual(3, splitedStr.Length);
+
+        }
+
+
 
         [TestCase(-1, 4)]
         public void TestCase_Assert(int i, int j) {
