@@ -1,4 +1,5 @@
 using Chi.Utilities.Graphics;
+using Chi.Utilities.Testing;
 using NSubstitute;
 using NUnit.Framework;
 using System;
@@ -21,7 +22,7 @@ namespace Chi.Testing
         [SetUp] // Do initalize before Test Run 
         public void SetUp() {
             // Load Test Asset
-            testAsset = LoadTestAsset<GameObject>(TEST_ASSETS_PATH);
+            testAsset = TestingUtilities.LoadTestAsset<GameObject>(TEST_ASSETS_PATH);
 
             meshInstance = Substitute.For<IMeshInstance>();
 
@@ -33,12 +34,6 @@ namespace Chi.Testing
             };
 
             this.controller = new MeshInstanceController(meshInstance, InstanceData_Mock);
-        }
-
-        private T LoadTestAsset<T>(string path) where T : UnityEngine.Object {
-            T obj = UnityEditor.AssetDatabase.LoadAssetAtPath<T>(path);
-            if (!obj) Debug.LogError("Load Asset Fail");
-            return obj;
         }
 
         [Test]
@@ -179,7 +174,7 @@ namespace Chi.Testing
 
         [Test]
         public void Test_Full() {
-            GameObject testAssetObj = LoadTestAsset<GameObject>(TEST_ASSETS_PATH);
+            GameObject testAssetObj = TestingUtilities.LoadTestAsset<GameObject>(TEST_ASSETS_PATH);
 
             InstanceData InstanceData_Mock = new InstanceData {
                 mesh = testAssetObj.GetComponent<MeshFilter>().sharedMesh,

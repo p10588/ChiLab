@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Chi.Utilities.Testing;
 
 namespace Chi.Testing
 {
@@ -23,7 +24,7 @@ namespace Chi.Testing
 
         [SetUp] // Do initalize before Test Run 
         public void SetUp() {
-            this.testAsset = LoadTestAsset<TextAsset>(TEST_ASSETS_PATH);
+            this.testAsset = TestingUtilities.LoadTestAsset<TextAsset>(TEST_ASSETS_PATH);
             this.subtitleTrack_Mock = ScriptableObject.CreateInstance<SubtitleAssetTrack>();
             this._controller = new SubtitleTrackController(this.subtitleTrack_Mock);
 
@@ -99,12 +100,6 @@ namespace Chi.Testing
             this.subtitleTrack_Mock = null;
             this._controller = null;
             this.testAsset = null;
-        }
-
-        private T LoadTestAsset<T>(string path) where T : UnityEngine.Object {
-            T obj = UnityEditor.AssetDatabase.LoadAssetAtPath<T>(path);
-            if (!obj) Debug.LogError("Load Asset Fail");
-            return obj;
         }
 
     }
