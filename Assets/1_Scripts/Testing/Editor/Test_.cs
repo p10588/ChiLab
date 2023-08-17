@@ -13,20 +13,20 @@ namespace Chi.Testing
 
         }
 
-        [Test]
+        //[Test]
         public void Test() {
             var result = false;
             Assert.AreEqual(false, result);
         }
 
-        [TestCase(-1, 4)]
+        //[TestCase(-1, 4)]
         public void TestCase_Assert(int i, int j) {
             var result = false;
             Assert.AreEqual(false, result);
         }
 
 
-        [Test]
+        //[Test]
         public void Test_VoidMethod() {
             try {
 
@@ -37,7 +37,7 @@ namespace Chi.Testing
             }
         }
 
-        [Test]
+        //[Test]
         public void Test_Exception() {
 
             //Assert.Throws<ArgumentNullException>(
@@ -45,7 +45,7 @@ namespace Chi.Testing
             //);
         }
 
-        [TearDown] // Do uninitalize after Test run
+        //[TearDown] // Do uninitalize after Test run
         public void TearDown() {
         }
 
