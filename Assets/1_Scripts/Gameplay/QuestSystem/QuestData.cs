@@ -6,7 +6,7 @@ namespace Chi.Gameplay.Quest
     public class QuestData
     {
         public string Id;
-        public int index;
+        public int Index;
         public bool IsRoot;
         public string QuestGroup;
         public string QuestName;

@@ -36,9 +36,12 @@ namespace Chi.Gameplay.Quest
 
             if (data["#"] is int) {
                 questData = new QuestData();
-                questData.index = ((int)data["#"]) - 1;
-                questData.Id = RootPrefix((int)data["IsRoot"]) + (string)data["Id"];
+                questData.Index = ((int)data["#"]) - 1;
+                questData.IsRoot = (int)data["IsRoot"] == 1;
                 questData.QuestName = (string)data["QuestName"];
+                questData.Id = RootPrefix(questData.IsRoot)
+                               + (int)data["#"] + "_"
+                               + questData.QuestName;
                 questData.QuestGroup = (string)data["QuestGroup"];
                 questData.QuestType = (QuestType)Enum.Parse(typeof(QuestType), (string)data["QuestType"]);
                 questData.NextQuestId = (string)data["NextQuestId"];
@@ -49,14 +52,14 @@ namespace Chi.Gameplay.Quest
                 questData.ShowInProgressUI = (string)data["ShowInProgressUI"];
                 questData.PassCondition = ConditionFactory.RequireCondition(ConditionType.Item);
                 questData.PassReward = RewardFactory.RequireReward(RewardType.Item);
-                Debug.Log("Finish " + questData.QuestName);
+                Debug.Log("Finish " + questData.Id);
             }
 
             return questData;
         }
 
-        private string RootPrefix(int isRoot) {
-            if (isRoot == 1) return "*";
+        private string RootPrefix(bool isRoot) {
+            if (isRoot) return "*";
             else return string.Empty;
         }
 
