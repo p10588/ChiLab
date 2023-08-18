@@ -34,13 +34,13 @@ namespace Chi.Gameplay.Quest
         private static bool isInitalized => RewardByName != null;
 
         private static void InitalizeFactory() {
-            var conditionType
+            var rewardType
                 = Assembly.GetAssembly(typeof(IReward)).GetTypes()
                   .Where(type => type.IsClass && typeof(IReward).IsAssignableFrom(type));
 
             RewardByName = new Dictionary<RewardType, Type>();
 
-            foreach (var type in conditionType) {
+            foreach (var type in rewardType) {
                 var tempInstance
                     = Activator.CreateInstance(type) as IReward;
                 RewardByName.Add(tempInstance.RewardType, type);
