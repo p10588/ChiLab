@@ -174,7 +174,7 @@ namespace Chi.Testing
 
         [Test]
         public void Test_Full() {
-            GameObject testAssetObj = TestingUtilities.LoadTestAsset<GameObject>(TEST_ASSETS_PATH);
+            GameObject testAssetObj = Utilities.TestingUtilities.LoadTestAsset<GameObject>(TEST_ASSETS_PATH);
 
             InstanceData InstanceData_Mock = new InstanceData {
                 mesh = testAssetObj.GetComponent<MeshFilter>().sharedMesh,
