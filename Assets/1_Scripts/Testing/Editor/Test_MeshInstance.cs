@@ -1,5 +1,5 @@
 using Chi.Utilities.Graphics;
-using Chi.Utilities.Testing;
+using Chi.Testing;
 using NSubstitute;
 using NUnit.Framework;
 using System;
@@ -22,7 +22,7 @@ namespace Chi.Testing
         [SetUp] // Do initalize before Test Run 
         public void SetUp() {
             // Load Test Asset
-            testAsset = TestingUtilities.LoadTestAsset<GameObject>(TEST_ASSETS_PATH);
+            testAsset = Utilities.TestingUtilities.LoadTestAsset<GameObject>(TEST_ASSETS_PATH);
 
             meshInstance = Substitute.For<IMeshInstance>();
 

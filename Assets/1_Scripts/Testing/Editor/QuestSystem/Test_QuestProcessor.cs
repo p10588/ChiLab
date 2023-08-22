@@ -3,7 +3,7 @@ using NUnit.Framework;
 using NSubstitute;
 using System;
 using UnityEngine;
-using Chi.Utilities.Testing;
+using Chi.Testing;
 using System.Collections.Generic;
 
 namespace Chi.Testing
@@ -29,8 +29,8 @@ namespace Chi.Testing
         [SetUp] // Do initalize before Test Run 
         public void SetUp() {
 
-            this.testTextAsset = TestingUtilities.LoadTestAsset<TextAsset>(PATH_CSV);
-            this.testQuestGroup = TestingUtilities.LoadTestAsset<GameObject>(PATH_TRIGGER_GROUP);
+            this.testTextAsset = Utilities.TestingUtilities.LoadTestAsset<TextAsset>(PATH_CSV);
+            this.testQuestGroup = Utilities.TestingUtilities.LoadTestAsset<GameObject>(PATH_TRIGGER_GROUP);
 
             List<GameObject> gameObjects = new List<GameObject>(1) { this.testQuestGroup };
 
@@ -50,7 +50,6 @@ namespace Chi.Testing
 
                 IQuestTrigger testTrigger = this._triggers[1];
                 this.questMgrProcessor.SpawnQuestObject(testTrigger, "2_BBB");
-                this._questProcessor = testTrigger.questProcessor;
                 this._questProcessor.ChangeProc(QuestProcState.Active);
                 var result = this._questProcessor.CurQuestState;
                 Assert.AreEqual(QuestProcState.Active, result);
@@ -66,8 +65,7 @@ namespace Chi.Testing
             try {
 
                 IQuestTrigger testTrigger = this._triggers[3];
-                this.questMgrProcessor.SpawnQuestObject(testTrigger, "4_DDD");
-                this._questProcessor = testTrigger.questProcessor;
+                this._questProcessor = this.questMgrProcessor.SpawnQuestObject(testTrigger, "4_DDD");
 
                 this._questProcessor.ChangeProc(QuestProcState.Active);
                 var result = this._questProcessor.CurQuestState;
@@ -96,8 +94,9 @@ namespace Chi.Testing
             try {
 
                 IQuestTrigger testTrigger = this._triggers[5];
-                this.questMgrProcessor.SpawnQuestObject(testTrigger, "6_FFF");
-                IQuestProcessor questProcessor = testTrigger.questProcessor;
+                IQuestProcessor questProcessor
+                    = this.questMgrProcessor.SpawnQuestObject(testTrigger, "6_FFF");
+                testTrigger.InitalizeTrigger(questProcessor);
 
                 questProcessor.ChangeProc(QuestProcState.Active);
                 var result = questProcessor.CurQuestState;

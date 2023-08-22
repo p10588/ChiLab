@@ -4,7 +4,7 @@ using NSubstitute;
 using System;
 using UnityEngine;
 using System.Collections.Generic;
-using Chi.Utilities.Testing;
+using Chi.Testing;
 using Chi.Utilities.Extensions;
 
 namespace Chi.Testing
@@ -26,8 +26,8 @@ namespace Chi.Testing
 
         [SetUp] // Do initalize before Test Run 
         public void SetUp() {
-            this.testTextAsset = TestingUtilities.LoadTestAsset<TextAsset>(PATH_CSV);
-            this.testQuestGroup = TestingUtilities.LoadTestAsset<GameObject>(PATH_TRIGGER_GROUP);
+            this.testTextAsset = Utilities.TestingUtilities.LoadTestAsset<TextAsset>(PATH_CSV);
+            this.testQuestGroup = Utilities.TestingUtilities.LoadTestAsset<GameObject>(PATH_TRIGGER_GROUP);
 
             List<GameObject> gameObjects = new List<GameObject>(1) { this.testQuestGroup };
 
@@ -127,7 +127,7 @@ namespace Chi.Testing
                         nextTriggers[i].questProcessor.ChangeProc(QuestProcState.Resolve);
                         Assert.AreEqual(false, nextTriggers[i].questProcessor == null);
                         Assert.AreEqual(false, nextTriggers[i].questProcessor.QuestData == null);
-                        if(!string.IsNullOrEmpty(nextTriggers[i].questProcessor.QuestData.NextQuestId))
+                        if (!string.IsNullOrEmpty(nextTriggers[i].questProcessor.QuestData.NextQuestId))
                             ids += "," + nextTriggers[i].questProcessor.QuestData.NextQuestId;
                     }
 

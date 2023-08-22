@@ -3,7 +3,7 @@ using NUnit.Framework;
 using NSubstitute;
 using System;
 using UnityEngine;
-using Chi.Utilities.Testing;
+using Chi.Testing;
 
 namespace Chi.Testing
 {
@@ -17,7 +17,7 @@ namespace Chi.Testing
 
         [SetUp] // Do initalize before Test Run 
         public void SetUp() {
-            _testData = TestingUtilities.LoadTestAsset<TextAsset>(PATH_CSV).text;
+            _testData = Utilities.TestingUtilities.LoadTestAsset<TextAsset>(PATH_CSV).text;
         }
 
         [Test]
