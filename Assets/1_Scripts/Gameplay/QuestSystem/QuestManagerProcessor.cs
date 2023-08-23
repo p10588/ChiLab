@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Chi.Utilities.Extensions;
 using Chi.Utilities.FileIO;
 using UnityEngine;
@@ -228,16 +229,13 @@ namespace Chi.Gameplay.Quest
         private IQuestProcessor CreateQuest(IQuestTrigger trigger, QuestData questData) {
             IQuestProcessor questProcessor
                 = QuestProcessorFactory.RequireQuestProcessor(questData.QuestType, questData, this);
-            trigger.questProcessor = questProcessor;
+            trigger.InitalizeTrigger(questProcessor);
             return questProcessor;
         }
 
-
         public void RemoveQuest(IQuestTrigger trigger) {
-
             if (!CheckPrepareAndStart()) return;
-
-            trigger.questProcessor = null;
+            trigger.UninitalizeTrigger();
         }
 
         private bool CheckPrepareAndStart() {
