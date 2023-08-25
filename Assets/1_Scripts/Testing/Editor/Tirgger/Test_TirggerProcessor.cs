@@ -1,3 +1,4 @@
+using Chi.Gameplay.Items;
 using Chi.Gameplay.Triggers;
 using NSubstitute;
 using NUnit.Framework;
