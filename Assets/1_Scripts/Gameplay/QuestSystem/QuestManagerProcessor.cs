@@ -69,7 +69,7 @@ namespace Chi.Gameplay.Quest
 
 
         private object GetUserData() {
-            Debug.Log("Get UserData is not Implemented");
+            Debug.LogWarning("Get UserData is not Implemented");
             return null;
         }
 
