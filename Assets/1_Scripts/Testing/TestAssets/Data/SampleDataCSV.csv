@@ -1,0 +1,9 @@
+#,IsRoot,QuestName,QuestGroup,QuestType,Retriggerable,NextQuestId,InteractText,ActiveConditionType,QuestHint,ShowInProgressUI,PassCondition,PassReward
+1,true,AAA,OOO,Normal,0,2_BBB,,,,,,
+2,false,BBB,OOO,Normal,0,3_CCC,,,,,,
+3,false,CCC,OOO,Normal,0,4_DDD,,,,,,
+4,false,DDD,OOO,Normal,0,5_EEE,,,,,,
+5,false,EEE,OOO,Normal,0,6_FFF,,,,,,
+6,false,FFF,OOO,Normal,0,"7_GGG,8_HHH",,,,,,
+7,false,GGG,OOO,Normal,0,,,,,,,
+8,false,HHH,OOO,Normal,0,,,,,,,

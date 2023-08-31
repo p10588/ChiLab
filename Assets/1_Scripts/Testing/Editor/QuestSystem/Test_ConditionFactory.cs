@@ -23,7 +23,7 @@ namespace Chi.Testing
                 try {
                     result = condition.CheckCondition();
                 } catch(Exception e) {
-
+                    Debug.LogError(e);
                 }
                 
                 Assert.AreEqual(true, result);
